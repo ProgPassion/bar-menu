@@ -1,0 +1,42 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+.menu_header {
+    background: #fff;
+    padding: 1rem 0;
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    box-shadow: 0 0.1px 0.4px rgba(0,0,0,.017), 0 0.3px 1px rgba(0,0,0,.024), 0 0.6px 1.9px rgba(0,0,0,.03), 0 1.1px 3.4px rgba(0,0,0,.036), 0 2.1px 6.3px rgba(0,0,0,.043), 0 5px 15px rgba(0,0,0,.06);
+}
+.menu_name {
+    font-size: 2rem;
+    color: #363636;
+    font-weight: 600;
+    margin: 0.5rem 1rem;
+}
+.menu_sections {
+    display: flex;
+    white-space: nowrap;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    padding: 0 1rem;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.menu_sections::-webkit-scrollbar {
+    display: none;
+}
+.menu_sectionButton {
+    font-size: 1rem;
+    font-weight: 600;
+    background: none;
+    list-style: none;
+    margin-right: 0.25rem;
+    display: block;
+    padding: 0.5rem 1rem;
+    border: 2px solid #e00000;
+    border-radius: 1.5rem;
+    cursor: pointer;
+}
