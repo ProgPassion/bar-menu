@@ -1,22 +1,48 @@
 import './App.css'
-
+import { MenuSection } from './components/MenuSection';
+import { data } from './data';
+import { useRef } from 'react';
 function App() {
+
+  const divRefs = {};
+
+  for(let i = 0; i < data.length; i++) {
+    divRefs[`div${i}`] = useRef(null);
+  }
+
+  const handleBtnClick = (divId) => {
+    const divRef = divRefs[divId];
+    if(divRef.current) {
+      divRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 
   return (
     <div>
       <div className='menu_header'>
         <div className='menu_name'>Bar & Grill</div>
         <ul className='menu_sections'>
-          <button className='menu_sectionButton'>Appetizers</button>
-          <button className='menu_sectionButton'>Mains</button>
-          <button className='menu_sectionButton'>Sides</button>
-          <button className='menu_sectionButton'>Desserts</button>
-          <button className='menu_sectionButton'>Drinks</button>
-          <button className='menu_sectionButton'>Specials</button>
+          {data.map((section, index) => {
+            return <button onClick={() => handleBtnClick(`div${index}`)} className='menu_sectionButton'>
+                    {section.category}
+                   </button>;
+          })}
         </ul>
       </div>
       <div className='menu_wrapper'>
-
+        <div className='menu_content'>
+          {data.map((section, index) => {
+            return <MenuSection 
+                      name={section.category} 
+                      description={section.description}
+                      items={section.items} 
+                      sectionId={index}
+                      divRefs={divRefs}
+                      key={index}
+                    />;
+          })} 
+        </div>
+        <footer className='footer'>Powered by <strong>Equity</strong></footer>
       </div>
     </div>
   )

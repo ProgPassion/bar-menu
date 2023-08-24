@@ -1,3 +1,6 @@
+* {
+    box-sizing: border-box;
+}
 html, body {
     margin: 0;
     padding: 0;
@@ -28,6 +31,10 @@ html, body {
 .menu_sections::-webkit-scrollbar {
     display: none;
 }
+.menu_section {
+    padding-top: 10rem;
+    margin-top: -10rem;    
+}
 .menu_sectionButton {
     font-size: 1rem;
     font-weight: 600;
@@ -39,4 +46,49 @@ html, body {
     border: 2px solid #e00000;
     border-radius: 1.5rem;
     cursor: pointer;
+}
+.menu_wrapper {
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.menu_content {
+    padding: 1rem;
+}
+.menu_sectionName {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #363636;
+    border-bottom: 2px solid #e00000;
+    margin: 0 0 0.5rem;
+    padding-bottom: 0.25rem;
+}
+.menu_sectionDescription {
+    font-size: 1rem;
+    color: #363636;
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+.menu_item {
+    margin-bottom: 1.5rem;
+}
+.menu_name-price {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+    font-weight: 800;
+}
+.menu_itemDescription, .menu_itemName, .menu_itemPrice, .footer {
+    font-size: 1rem;
+    color: #363636;
+}
+.menu_itemDescription {
+    font-style: italic;
+    width: 90%;
+}
+.footer {
+    text-align: center;
+    padding: 0.5rem;
+    font-weight: 600;
 }
