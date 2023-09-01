@@ -1,51 +1,59 @@
+import { Outlet, useRoutes } from 'react-router-dom';
+import { BarMenu } from './components/BarMenu';
+import { Login } from './components/Login';
 import './App.css'
-import { MenuSection } from './components/MenuSection';
-import { data } from './data';
-import { useRef } from 'react';
+import { MyLayout } from './components/MyLayout';
+import { Dashboard } from './components/Dashboard';
+import { Suspense } from 'react';
+import { MySpin } from './components/MySpin';
+
 function App() {
 
-  const divRefs = {};
-
-  for(let i = 0; i < data.length; i++) {
-    divRefs[`div${i}`] = useRef(null);
+  const AppRoute = ({withLayout = true}) => {
+    return(
+      <>
+        <MyLayout visible={withLayout}>
+          <Suspense
+            fallback={
+              <div
+                style={{
+                  width: 'fit-content',
+                  height: 'fit-content',
+                  margin: 'auto'
+                }}>
+                  <MySpin props={{ size: 'large' }} iconSize={70} />
+              </div>
+            }>
+              <Outlet />
+          </Suspense>
+        </MyLayout>
+      </>
+    );
   }
 
-  const handleBtnClick = (divId) => {
-    const divRef = divRefs[divId];
-    if(divRef.current) {
-      divRef.current.scrollIntoView({ behavior: 'smooth' });
+  const routes = useRoutes([
+    {
+      path: '/',
+      element: <BarMenu />
+    },
+    {
+      path: '/login',
+      element: <Login />
+    },
+    {
+      path: '/admin',
+      element: <AppRoute />,
+      children: [
+        {path: "", element: <Dashboard />}
+      ]
     }
-  }
+  ]);
 
   return (
     <div>
-      <div className='menu_header'>
-        <div className='menu_name'>Bar & Grill</div>
-        <ul className='menu_sections'>
-          {data.map((section, index) => {
-            return <button onClick={() => handleBtnClick(`div${index}`)} className='menu_sectionButton'>
-                    {section.category}
-                   </button>;
-          })}
-        </ul>
-      </div>
-      <div className='menu_wrapper'>
-        <div className='menu_content'>
-          {data.map((section, index) => {
-            return <MenuSection 
-                      name={section.category} 
-                      description={section.description}
-                      items={section.items} 
-                      sectionId={index}
-                      divRefs={divRefs}
-                      key={index}
-                    />;
-          })} 
-        </div>
-        <footer className='footer'>Powered by <strong>Equity</strong></footer>
-      </div>
+      {routes}
     </div>
-  )
+  );
 }
 
 export default App
