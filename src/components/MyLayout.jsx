@@ -9,6 +9,8 @@ import {
 import {Layout, Menu, Popover, theme} from 'antd';
 import {Footer} from "antd/lib/layout/layout";
 import {Link, useLocation} from "react-router-dom";
+import storage from '../utils/storage';
+import { UserOptions } from './UserOptions';
 
 const {Content, Sider} = Layout;
 
@@ -23,6 +25,7 @@ const getItemTopByUrl = (url) => {
 }
 
 export function MyLayout({children, visible = true}) {
+    const user = storage.getUser();
     const [collapsed, setCollapsed] = useState(false);
     const location = useLocation();
     const {
@@ -45,11 +48,11 @@ export function MyLayout({children, visible = true}) {
                     })}
                 </Menu>
                 <div style={{bottom: 50, position: "absolute", width: "100%"}}>
-                    <Popover placement='rightTop' title="admin">
+                    <Popover content={<UserOptions />} placement='rightTop' title={user?.username}>
                         <Menu theme="dark" mode="inline" defaultSelectedKeys={["user"]}>
                             <Menu.Item key="user" title="">
                                 <UserOutlined />
-                                <span>admin</span>
+                                <span>{user?.username}</span>
                             </Menu.Item>
                         </Menu>
                     </Popover>
