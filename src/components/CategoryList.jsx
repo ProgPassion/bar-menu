@@ -1,7 +1,7 @@
 import { Button, Card, Collapse } from "antd";
 import { MoreOutlined, PlusOutlined } from "@ant-design/icons";
 import { axios } from "../api/axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CategoryDropdown } from "./CategoryDropdown";
 import { useNotificationStore } from "../stores/notifications";
 import { AddCategoryModal } from "./AddCategoryModal";
@@ -13,6 +13,9 @@ export function CategoryList() {
     const [dialogOpened, setDialogOpened] = useState({open: false});
     const [categories, setCategories] = useState([]);
     const notifications = useNotificationStore();
+
+    const dragCategory = useRef(null);
+    const dragOverCategory = useRef(null);
 
     const handleModalCancel = () => {
         setDialogOpened({open: false});
@@ -31,7 +34,7 @@ export function CategoryList() {
                 type: "success",
                 title: "Success",
                 message: "Category added successfully"
-            })
+            });
             handleModalCancel();
             getCategoryList();
         })
@@ -40,8 +43,36 @@ export function CategoryList() {
                 type: "error",
                 title: "Error",
                 message: error.message
-            })
+            });
+        });
+    }
+
+    const changeCategoryRank = () => {
+        const categOne = {
+            id: dragCategory.current.id,
+            rank: dragOverCategory.current.rank
+        };
+        const categTwo = {
+            id: dragOverCategory.current.id,
+            rank: dragCategory.current.rank
+        };
+
+        axios.put("/category/changerank", [categOne, categTwo])
+        .then(() => {
+            notifications.addNotification({
+                type: "success",
+                title: "Success",
+                message: "Categories changed order"
+            });
+            getCategoryList();
         })
+        .catch((error) => {
+            notifications.addNotification({
+                type: "error",
+                title: "Error",
+                message: error.message
+            });
+        });
     }
 
     const updateCategory = (id, name, description) => {
@@ -51,7 +82,7 @@ export function CategoryList() {
                 type: "success",
                 title: "Success",
                 message: "Category updated successfully"
-            })
+            });
             getCategoryList();
         })
         .catch((error) => {
@@ -59,8 +90,8 @@ export function CategoryList() {
                 type: 'error',
                 title: 'Error',
                 message: error.message
-            })
-        })
+            });
+        });
     }
     
     const deleteCategory = (id) => {
@@ -70,7 +101,7 @@ export function CategoryList() {
                 type: "success",
                 title: "Success",
                 message: "Category deleted successfully"
-            })
+            });
             getCategoryList();
         })
         .catch((error) => {
@@ -78,8 +109,8 @@ export function CategoryList() {
                 type: 'error',
                 title: 'Error',
                 message: error.message
-            })
-        })
+            });
+        });
     }
     
 
@@ -104,17 +135,20 @@ export function CategoryList() {
                         <PlusOutlined /> Add category
                     </Button>
                 </div>
-                <Collapse items={categories.map((category) => {
-                    return {
-                        key: category.id,
-                        label: category.name,
-                        children: <CategoryDropdown 
-                                    category={category}
-                                    updateCategory={updateCategory}
-                                />,
-                        extra: <CategoryDelete id={category.id} deleteCategory={deleteCategory} />
-                        }
-                })}/>
+                <Collapse>
+                    {categories.map((category) => {
+                        return <Collapse.Panel 
+                                header={category.name} 
+                                key={category.id} 
+                                extra={<CategoryDelete id={category.id} deleteCategory={deleteCategory} />} 
+                                draggable
+                                onDragStart={(e) => {dragCategory.current = category}}
+                                onDragEnter={(e) => {dragOverCategory.current = category}}
+                                onDragEnd={changeCategoryRank}>
+                                    <CategoryDropdown category={category} updateCategory={updateCategory}/>
+                                </Collapse.Panel>;
+                    })}
+                </Collapse>
             </Card>
             <AddCategoryModal 
                 dialogOpened={dialogOpened}
