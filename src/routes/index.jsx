@@ -1,4 +1,4 @@
-import { Outlet, useRoutes, useLocation, BrowserRouter as Router, Navigate } from 'react-router-dom';
+import { Outlet, useLocation, Navigate } from 'react-router-dom';
 import { BarMenu } from '../components/BarMenu';
 import { Login } from '../components/Login';
 import { MyLayout } from '../components/MyLayout';
@@ -10,7 +10,6 @@ import { Category } from '../components/Category';
 import { Product } from '../components/Product';
 import { checkAuth } from '../auth';
 import { SingUp } from '../components/SingUp';
-import { NotFound } from '../components/NotFound';
 
 
 
@@ -55,7 +54,7 @@ const publicRoutes = (user) => {
       },
       {
         path: '*',
-        element: <NotFound />
+        element: <Navigate to={"/login"} />
       }
     ];
   }
