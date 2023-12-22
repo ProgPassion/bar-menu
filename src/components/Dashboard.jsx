@@ -8,6 +8,7 @@ import {LoadingOutlined, InfoCircleOutlined} from '@ant-design/icons';
 import { UserUrlModal } from "./UserUrlModal";
 import { axios } from "../api/axios";
 import { WEB_URL } from "../config";
+import { useNotificationStore } from "../stores/notifications";
 
 export function Dashboard() {
 
@@ -15,15 +16,26 @@ export function Dashboard() {
     const [products, setProducts] = useState(0);
     const [treeData, setTreeData] = useState([]);
     const [userUrl, setUserUrl] = useState("");
-    const [isLoading, setIsLoading] = useState(true);
+    const [userBusinessName, setUserBusinessName] = useState("");
+    const [isUrlFetched, setIsUrlFetched] = useState(false);
+    const [isBusinessNameFetched, setIsBusinessNameFetched] = useState(false);
+    
     const [isUrlModalOpen, setIsUrlModalOpen] = useState(false);
     const antIcon = <LoadingOutlined style={{ fontSize: 140}} spin />
+    const notifications = useNotificationStore();
 
 
     const getUserUrl = () => {
         axios.get("/user/geturl").then(res => {
             setUserUrl(res);
-            setIsLoading(false);
+            setIsUrlFetched(true);
+        });
+    }
+
+    const getUserBusinessName = () => {
+        axios.get("/user/getbusinessname").then(res => {
+            setUserBusinessName(res);
+            setIsBusinessNameFetched(true);
         });
     }
 
@@ -76,9 +88,28 @@ export function Dashboard() {
         }
     }
 
+    const handleSaveBusinessName = () => {
+        axios.put("/user/setbusinessname", {"name": userBusinessName})
+        .then(() => {
+            notifications.addNotification({
+                type: "success",
+                title: "Success",
+                message: "Business name changed successfully"
+            })
+        })
+        .catch((error) => {
+            notifications.addNotification({
+                type: "error",
+                title: "Error",
+                message: error.message
+            })
+        });
+    }
+
     useEffect(() => {
         getDashboardData();
         getUserUrl();
+        getUserBusinessName();
     }, []);
 
     return (
@@ -94,7 +125,7 @@ export function Dashboard() {
                 icon={<CoffeeOutlined />}
                 dbInfo={products}
             />
-            {isLoading 
+            { (isUrlFetched === false || isBusinessNameFetched === false)
             ? ( 
                 <div style={{
                     width: "100vw", 
@@ -115,30 +146,50 @@ export function Dashboard() {
                             treeData={treeData}
                         />
                         <div style={{marginLeft: "auto"}}>
-                            <div style={{display: "flex"}}>
-                                <label style={{display: "flex"}}>
-                                    <Space>
-                                        <MyLabel text={"Direct Link"} />
-                                        <Tooltip title={"Use this link to access the menu"}>
-                                            <InfoCircleOutlined style={{fontSize: 11, color: "#545653"}} />
-                                        </Tooltip>
-                                    </Space>
-                                </label>
-                                <Button type="link" onClick={() => {setIsUrlModalOpen(true);}}
-                                style={{display: "flex", marginLeft: "auto"}}>
-                                    Change
-                                </Button>
-                            </div>
-                            <Space.Compact style={{width: "400px"}}>
-                                <Input type="text" value={`${WEB_URL}/menu/${userUrl}`} />
-                                <div id="myqrcode">
-                                    <QRCode value={`${WEB_URL}/menu/${userUrl}`} bgColor="#fff"
-                                        color="#000" size={300} bordered={true} errorLevel="Q" style={{display: "none"}} />
-                                    <Button icon={<QrcodeOutlined style={{fontSize: 11, color: "#545653"}}/>} 
-                                        onClick={downloadQRCode}/>
+                            <div style={{display: "flex", flexDirection: "column"}}>
+                                <div style={{display: "flex"}}>
+                                    <label style={{display: "flex"}}>
+                                        <Space>
+                                            <MyLabel text={"Direct Link"} />
+                                            <Tooltip title={"Use this link to access the menu"}>
+                                                <InfoCircleOutlined style={{fontSize: 11, color: "#545653"}} />
+                                            </Tooltip>
+                                        </Space>
+                                    </label>
+                                    <Button type="link" onClick={() => {setIsUrlModalOpen(true);}}
+                                    style={{display: "flex", marginLeft: "auto"}}>
+                                        Change
+                                    </Button>
                                 </div>
-                                <Button onClick={() => handleCopy(`${WEB_URL}/menu/${userUrl}`)} icon={<CopyFilled style={{fontSize: 11, color: "#545653"}} />}/>
-                            </Space.Compact>
+                                <Space.Compact style={{width: "400px"}}>
+                                    <Input type="text" value={`${WEB_URL}/menu/${userUrl}`} />
+                                    <div id="myqrcode">
+                                        <QRCode value={`${WEB_URL}/menu/${userUrl}`} bgColor="#fff"
+                                            color="#000" size={300} bordered={true} errorLevel="Q" style={{display: "none"}} />
+                                        <Button icon={<QrcodeOutlined style={{fontSize: 11, color: "#545653"}}/>} 
+                                            onClick={downloadQRCode}/>
+                                    </div>
+                                    <Button onClick={() => handleCopy(`${WEB_URL}/menu/${userUrl}`)} icon={<CopyFilled style={{fontSize: 11, color: "#545653"}} />}/>
+                                </Space.Compact>
+                                <div style={{display: "flex", marginTop: "10px", alignItems: "center"}}>
+                                    <span style={{width: "100px", color: "#777373", fontWeight: "700"}}>Business name: </span>
+                                    <Input 
+                                        type="text" 
+                                        style={{width: "240px"}} 
+                                        value={userBusinessName} 
+                                        onChange={(e) => setUserBusinessName(e.target.value)} 
+                                    />
+                                    <Button 
+                                        style={{
+                                            backgroundColor: "#1677ff", 
+                                            color: "#fff"
+                                        }}
+                                        onClick={handleSaveBusinessName}
+                                    >
+                                        Save
+                                    </Button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </Card>

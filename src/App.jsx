@@ -7,7 +7,7 @@ import { useRoutes } from 'react-router-dom';
 function App() {
 
   const routes = getRoutes();
-  console.log(routes);
+  
   return (
     <div>
       <ConfigProvider>

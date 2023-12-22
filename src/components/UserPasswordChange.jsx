@@ -26,7 +26,6 @@ export function UserPasswordChange({callbackFn}) {
             })
         });
         
-        console.log(values);
     }
 
     return (

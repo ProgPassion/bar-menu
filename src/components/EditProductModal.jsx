@@ -54,12 +54,6 @@ export function EditProductModal({dialogOpened, setDialogOpened, editProduct, ca
                     <Form.Item
                         label={<MyLabel text='Product description' fontSize={15}/>}
                         name="description"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input the Product Description!',
-                            }
-                        ]}
                     >
                         <TextArea rows={3}></TextArea> 
                     </Form.Item>

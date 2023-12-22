@@ -9,6 +9,7 @@ import { NotFound } from './NotFound';
 
 export function BarMenu() {
     const { linkCode } = useParams();
+    const [menuTitle, setMenuTitle] = useState("");
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [divRefs, setDivRefs] = useState({});
@@ -25,9 +26,10 @@ export function BarMenu() {
     const getMenuData = () => {
         axios.get(`/menu/${linkCode}`)
         .then(res => {
-            setData(res);
+            setMenuTitle(res.businessName);
+            setData(res.menuItems);
             setIsLoading(false);
-            handleSetDivRefs(res);
+            handleSetDivRefs(res.menuItems);
             setNotFound(false);
         })
         .catch((error) => {
@@ -67,7 +69,7 @@ export function BarMenu() {
                 ) : (
                     <>
                         <div className='menu_header'>
-                            <div className='menu_name'>Bar & Grill</div>
+                            <div className='menu_name'>{menuTitle}</div>
                             <ul className='menu_sections'>
                             {data.map((section, index) => {
                                 return <button key={index} onClick={() => handleBtnClick(`div${index}`)} className='menu_sectionButton'>
@@ -89,7 +91,7 @@ export function BarMenu() {
                                         />;
                             })} 
                             </div>
-                            <footer className='footer'>Powered by <strong>Equity</strong></footer>
+                            <footer className='footer'>Powered by <strong><a href="https://augmendev.com/">augmendev.com</a></strong></footer>
                         </div>
                     </>
                 )}

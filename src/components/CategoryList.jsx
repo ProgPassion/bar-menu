@@ -150,6 +150,15 @@ export function CategoryList() {
                     })}
                 </Collapse>
             </Card>
+            <Card style={{ margin: "20px" }}>
+                <h2 style={{ 
+                    color: "#555", 
+                    border: "1px dashed #f00", 
+                    padding: "5px",
+                    borderRadius: "5px"}}>
+                    You can drag and drop the category to reorder them. By reordering you change the way your products will be listed in the menu.
+                </h2>
+            </Card>
             <AddCategoryModal 
                 dialogOpened={dialogOpened}
                 setDialogOpened={setDialogOpened}
