@@ -26,6 +26,7 @@ export function BarMenu() {
     const getMenuData = () => {
         axios.get(`/menu/${linkCode}`)
         .then(res => {
+            document.title = res.businessName;
             setMenuTitle(res.businessName);
             setData(res.menuItems);
             setIsLoading(false);
